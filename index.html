@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>盈特数据可视化平台</title>
+<link rel="stylesheet" href="css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+<div id="app">
+  <!-- 侧边栏 -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon" id="logoIcon"></div>
+        <span class="logo-text">盈特数据平台</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <!-- 工作台（独立项） -->
+      <a href="#" class="nav-item top-level active" data-page="dashboard">
+        <span class="nav-icon" id="nav-dashboard"></span><span class="nav-label">工作台</span>
+      </a>
+
+      <!-- 订单&销售 -->
+      <div class="nav-group">
+        <div class="nav-group-header" onclick="toggleNavGroup(this)">
+          <span class="group-icon" id="grp-order"></span>
+          <span>订单 & 销售</span>
+          <span class="group-arrow" id="grp-order-arrow"></span>
+        </div>
+        <div class="nav-group-items">
+          <a href="#" class="nav-item" data-page="order">
+            <span class="nav-icon" id="nav-order"></span><span class="nav-label">订单报表</span>
+            <span class="nav-badge">7</span>
+          </a>
+          <a href="#" class="nav-item" data-page="budget">
+            <span class="nav-icon" id="nav-budget"></span><span class="nav-label">预算管理</span>
+          </a>
+          <a href="#" class="nav-item" data-page="customer">
+            <span class="nav-icon" id="nav-customer"></span><span class="nav-label">客户分析</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 采购 -->
+      <div class="nav-group">
+        <div class="nav-group-header" onclick="toggleNavGroup(this)">
+          <span class="group-icon" id="grp-purchase"></span>
+          <span>采购</span>
+          <span class="group-arrow" id="grp-purchase-arrow"></span>
+        </div>
+        <div class="nav-group-items">
+          <a href="#" class="nav-item" data-page="purchase">
+            <span class="nav-icon" id="nav-purchase"></span><span class="nav-label">采购管理</span>
+            <span class="nav-badge soon">规划中</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 财务 -->
+      <div class="nav-group">
+        <div class="nav-group-header" onclick="toggleNavGroup(this)">
+          <span class="group-icon" id="grp-finance"></span>
+          <span>财务</span>
+          <span class="group-arrow" id="grp-finance-arrow"></span>
+        </div>
+        <div class="nav-group-items">
+          <a href="#" class="nav-item" data-page="finance">
+            <span class="nav-icon" id="nav-finance"></span><span class="nav-label">结算财务</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 生产 -->
+      <div class="nav-group">
+        <div class="nav-group-header" onclick="toggleNavGroup(this)">
+          <span class="group-icon" id="grp-production"></span>
+          <span>生产</span>
+          <span class="group-arrow" id="grp-production-arrow"></span>
+        </div>
+        <div class="nav-group-items">
+          <a href="#" class="nav-item" data-page="inventory">
+            <span class="nav-icon" id="nav-inventory"></span><span class="nav-label">库存分析</span>
+          </a>
+          <a href="#" class="nav-item" data-page="design">
+            <span class="nav-icon" id="nav-design"></span><span class="nav-label">设计分析</span>
+          </a>
+          <a href="#" class="nav-item" data-page="production">
+            <span class="nav-icon" id="nav-production"></span><span class="nav-label">生产排产</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-section" style="margin-top:8px;">
+        <div class="nav-section-title">系统管理</div>
+        <a href="#" class="nav-item top-level" data-page="datasource">
+          <span class="nav-icon" id="nav-datasource"></span><span class="nav-label">数据源管理</span>
+        </a>
+        <a href="#" class="nav-item top-level" data-page="report-builder">
+          <span class="nav-icon" id="nav-report-builder"></span><span class="nav-label">自定义报表</span>
+        </a>
+        <a href="#" class="nav-item top-level" data-page="permissions">
+          <span class="nav-icon" id="nav-permissions"></span><span class="nav-label">权限管理</span>
+        </a>
+        <a href="#" class="nav-item top-level" data-page="offline-data">
+          <span class="nav-icon" id="nav-upload"></span><span class="nav-label">线下数据维护</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 顶部栏 -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <nav class="breadcrumb" id="breadcrumb">
+          <span>工作台</span>
+        </nav>
+      </div>
+      <div class="topbar-right">
+        <div class="global-filter">
+          <label>全局时间</label>
+          <select id="globalYear">
+            <option value="2026">2026年</option>
+            <option value="2025">2025年</option>
+            <option value="2024">2024年</option>
+          </select>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" title="通知" id="btnBell"></button>
+          <button class="icon-btn" title="帮助" id="btnHelp"></button>
+          <div class="user-avatar">刘</div>
+          <span class="user-name">刘丹</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 页面内容容器 -->
+    <div class="page-container" id="pageContainer"></div>
+  </main>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pages.js"></script>
+<script src="js/charts.js"></script>
+<script>
+// 注入SVG图标
+document.getElementById('logoIcon').innerHTML = ICONS.logo;
+document.getElementById('nav-dashboard').innerHTML = ICONS.dashboard;
+// 业务板块组图标
+document.getElementById('grp-order').innerHTML = ICONS.order;
+document.getElementById('grp-order-arrow').innerHTML = ICONS.chevronDown;
+document.getElementById('grp-purchase').innerHTML = ICONS.purchase;
+document.getElementById('grp-purchase-arrow').innerHTML = ICONS.chevronDown;
+document.getElementById('grp-finance').innerHTML = ICONS.finance;
+document.getElementById('grp-finance-arrow').innerHTML = ICONS.chevronDown;
+document.getElementById('grp-production').innerHTML = ICONS.production;
+document.getElementById('grp-production-arrow').innerHTML = ICONS.chevronDown;
+// 子菜单图标
+document.getElementById('nav-order').innerHTML = ICONS.chart;
+document.getElementById('nav-budget').innerHTML = ICONS.budget;
+document.getElementById('nav-customer').innerHTML = ICONS.customer;
+document.getElementById('nav-purchase').innerHTML = ICONS.shopping;
+document.getElementById('nav-finance').innerHTML = ICONS.finance;
+document.getElementById('nav-inventory').innerHTML = ICONS.inventory;
+document.getElementById('nav-design').innerHTML = ICONS.design;
+document.getElementById('nav-production').innerHTML = ICONS.production;
+document.getElementById('nav-datasource').innerHTML = ICONS.datasource;
+document.getElementById('nav-report-builder').innerHTML = ICONS.builder;
+document.getElementById('nav-permissions').innerHTML = ICONS.lock;
+document.getElementById('nav-upload').innerHTML = ICONS.upload;
+document.getElementById('btnBell').innerHTML = ICONS.bell;
+document.getElementById('btnHelp').innerHTML = ICONS.help;
+</script>
+</body>
+</html>
